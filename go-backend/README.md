@@ -1,24 +1,14 @@
 # Go Backend Standards Skill
 
-Go backend development standards for Claude Code. Auto-triggers when working on Go code.
+Go backend development standards for any Agent Skills consumer, applied when working on Go code.
 
 ## Installation
 
-Copy this folder to `.claude/skills/` in your project:
-
-```bash
-cp -r go-backend-skill .claude/skills/go-backend
-```
-
-Or for personal use across all projects:
-
-```bash
-cp -r go-backend-skill ~/.claude/skills/go-backend
-```
+This skill is vendored with the rest of `agent-skills`: the consuming repository carries the repository as a git submodule at `agent-skills/`, pinned to a tag, and its `AGENTS.md` tells the agent to read `agent-skills/go-backend/SKILL.md` when working on Go code. See the top-level README for the contract.
 
 ## What's Included
 
-**SKILL.md** (auto-loads when working on Go):
+**SKILL.md** (read when working on Go):
 - Architecture: `cmd/internal/pkg`, interface-based design, domain organization
 - Testing: Table-driven, mocks, >80% coverage, integration tests
 - Observability: OTel via middleware/decorators, trace-enriched logging
@@ -34,11 +24,7 @@ cp -r go-backend-skill ~/.claude/skills/go-backend
 
 ## Usage
 
-Once installed, Claude Code auto-applies these standards when it detects Go work. You can also invoke explicitly:
-
-```
-/go-backend-standards
-```
+The consuming repository's `AGENTS.md` names the trigger (any Go work) and the path. Nothing auto-discovers the skill from `agent-skills/`; the instruction file is the discovery.
 
 ## Structure
 
@@ -55,9 +41,4 @@ go-backend/
 
 ## Updating
 
-Pull latest and re-copy:
-
-```bash
-git pull
-cp -r go-backend-skill ~/.claude/skills/go-backend
-```
+Advance the submodule pointer in the consuming repository to a newer tag of `agent-skills`; a copy edited in place is drift.

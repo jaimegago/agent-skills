@@ -7,7 +7,7 @@ description: Create, edit, and audit human-facing docs (README.md, /docs, contri
 
 ## Purpose
 
-Write and maintain documentation for humans: README.md, /docs content, contributor guides, setup instructions. This is the counterpart to llm-docs-authoring — that skill handles CLAUDE.md, this one handles everything a human would read.
+Write and maintain documentation for humans: README.md, /docs content, contributor guides, setup instructions. This is the counterpart to llm-docs-authoring — that skill handles AGENTS.md, this one handles everything a human would read.
 
 ## When to use
 
@@ -27,7 +27,7 @@ Unlike llm-docs, this skill handles both authoring and drift-hunting. Prose has 
 - `CONTRIBUTING.md`, `INSTALL.md`, similar top-level files
 
 What does NOT count:
-- `CLAUDE.md` — that is llm-docs-authoring's job
+- `AGENTS.md` — that is llm-docs-authoring's job
 - Spec documents that ARE the product (e.g., oasis-spec's spec files) — those are source, not docs about source
 - API reference generated from code — that is the build system's job
 
@@ -94,7 +94,7 @@ Unlike llm-docs-audit, this skill CAN edit — but only after the developer appr
 ## What NOT to do
 
 - Do NOT duplicate content between README and /docs. Pick one home for each piece of information, link from the other.
-- Do NOT duplicate content from CLAUDE.md. If something is in CLAUDE.md because it is an invariant the agent needs to know, it does not automatically need to be in human docs — only include it if a human would benefit.
+- Do NOT duplicate content from AGENTS.md. If something is in AGENTS.md because it is an invariant the agent needs to know, it does not automatically need to be in human docs — only include it if a human would benefit.
 - Do NOT write docs for features that do not exist yet. Docs describe what IS, not what is planned.
 - Do NOT add "Why we built this" sections unless the developer specifically asks. It ages badly.
 - Do NOT invent examples. If you need an example, use one from the actual codebase or ask.
