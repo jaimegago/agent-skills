@@ -1,6 +1,8 @@
 ---
 name: llm-docs-authoring
 description: Create or edit AGENTS.md files. Use when asked to create a AGENTS.md, add or update sections, or apply findings from an llm-docs-audit run. Does not hunt for drift.
+metadata:
+  version: "1.0.0"
 ---
 
 # LLM Docs Authoring

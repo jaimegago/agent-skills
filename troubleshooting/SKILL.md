@@ -1,6 +1,8 @@
 ---
 name: troubleshooting
 description: Use when the user is debugging or diagnosing a problem that requires running shell commands to investigate. Triggers on any multi-step diagnostic where the next command depends on the output of the previous one — broken builds, failing tests, K8s/cluster issues, network problems, misbehaving services, unexplained errors. Do not use for one-shot lookups or when the fix is already known.
+metadata:
+  version: "1.0.0"
 ---
 
 # Troubleshooting: one command at a time

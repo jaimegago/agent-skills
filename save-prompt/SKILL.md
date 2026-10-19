@@ -4,6 +4,8 @@ description: Save the prompt that produced generated code before committing. Use
 disable-model-invocation: true
 allowed-tools: Bash(git *) Read Write
 argument-hint: [target-file-or-directory]
+metadata:
+  version: "1.0.0"
 ---
 
 ## Purpose

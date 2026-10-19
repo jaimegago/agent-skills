@@ -1,6 +1,8 @@
 ---
 name: human-docs-authoring
 description: Create, edit, and audit human-facing docs (README.md, /docs, contributor guides). Use when asked to write, update, or review docs meant for humans. Handles both authoring and drift-hunting in one invocation.
+metadata:
+  version: "1.0.0"
 ---
 
 # Human Docs Authoring

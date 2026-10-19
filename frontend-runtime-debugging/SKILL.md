@@ -1,6 +1,8 @@
 ---
 name: frontend-runtime-debugging
 description: Use mid-debugging when a React UI does not reflect data that is known to be correct at its source — a component renders nothing or stale content even though the API returns the right response, a react-query / data-fetching hook seems stuck, or the network panel shows a successful 200 but the UI never updates. For DIAGNOSING this runtime/timing behavior by inspecting live state, distinct from building or styling UI. Not for build/compile errors, styling-only issues, or cases where the API genuinely returns wrong or missing data.
+metadata:
+  version: "1.0.0"
 ---
 
 # Frontend Runtime Debugging: inspect live state before re-reading source

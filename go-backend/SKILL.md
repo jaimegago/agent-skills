@@ -1,6 +1,8 @@
 ---
-name: go-backend-standards
+name: go-backend
 description: Go backend development standards and architecture patterns. Use this skill whenever writing, reviewing, or scaffolding Go backend code including services, APIs, operators, or any Go project. Triggers on Go file creation, code review requests, architecture discussions, or when the user mentions Go, Golang, backend services, REST APIs, gRPC, or Kubernetes operators. Always apply these standards when generating Go code.
+metadata:
+  version: "1.0.0"
 ---
 
 # Go Backend Development Standards

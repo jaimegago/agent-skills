@@ -1,6 +1,8 @@
 ---
 name: git-commit
 description: Commit staged and unstaged changes with an auto-generated Conventional Commit message, then sync the branch with the remote. Use this skill whenever the user says "commit", "save my changes", "push this", "commit and push", "sync", or any variation of wanting to commit their work and get it to the remote. Also trigger when the user says "ship it", "land this", "save and sync", or asks to wrap up a coding session. Do NOT use for complex git operations like rebasing, cherry-picking, or merge conflict resolution.
+metadata:
+  version: "1.0.0"
 ---
 
 ## Workflow

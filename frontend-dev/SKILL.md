@@ -1,6 +1,8 @@
 ---
 name: frontend-dev
 description: Senior-level frontend engineering guidance covering architecture, component design, performance, design systems, API integration, and testing. Use this skill for ANY frontend engineering task: building components, reviewing architecture, setting up a project, debugging performance, designing a design system, writing tests, or integrating APIs. Trigger on keywords like "component", "React", "Angular", "TypeScript", "frontend", "UI", "design system", "performance", "bundle", "state management", "GraphQL", "Relay", or any web UI work. Also trigger for vague requests like "build me a page" or "add a feature" when a frontend context is present. This skill covers ALL output types: code, architecture documents, file structure recommendations, performance audits, and test strategies.
+metadata:
+  version: "1.0.0"
 ---
 
 # Frontend Dev Skill

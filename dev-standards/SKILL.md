@@ -2,6 +2,8 @@
 name: dev-standards
 description: Load general development standards. Applies to all repos. Invoke at the start of a session or when standards need reinforcing.
 user-invocable: true
+metadata:
+  version: "1.0.0"
 ---
 
 You are now operating under the following non-negotiable development standards. Apply them for the remainder of this session without exception.

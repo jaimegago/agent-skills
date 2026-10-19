@@ -37,11 +37,27 @@ a pin makes.
 
 ## Versions
 
-Tags on this repository, `vMAJOR.MINOR.PATCH`. A submodule pins a commit;
-the tag is its name. Skills carry no version of their own.
+Two numbers, independent of each other.
 
+**Each skill carries its own version**, `metadata.version` in its `SKILL.md`
+frontmatter, semver. It names the state of that one skill and is what the
+skill's evaluation keys on. A change inside a skill's directory bumps it in
+the same commit: patch for wording, minor for added guidance, major for a
+changed rule.
+
+**Tags on this repository**, `vMAJOR.MINOR.PATCH`, name commits for consumers
+to pin. A submodule pins a commit; the tag is its name, and its notes list
+every skill's version at that commit, so a pin resolves to a set of skill
+versions without reading ten files. A tag is cut when a consumer needs to pin
+the result.
+
+- `v1.1.0` — every skill at `1.0.0`: dev-standards, frontend-dev,
+  frontend-runtime-debugging, git-commit, go-backend, human-docs-authoring,
+  llm-docs-audit, llm-docs-authoring, save-prompt, troubleshooting.
+  `go-backend`'s `name` corrected to match its directory, as the spec
+  requires.
 - `v1.0.0` — the ten skills as they stood when the repository was created,
-  2026-10-19.
+  2026-10-19, before per-skill versions existed.
 
 ## Format
 

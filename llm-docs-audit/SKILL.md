@@ -1,6 +1,8 @@
 ---
 name: llm-docs-audit
 description: Audit AGENTS.md for drift against the repo and installed skills. Use when asked to check, audit, or review AGENTS.md for staleness. Produces a findings list only, does not edit.
+metadata:
+  version: "1.0.0"
 ---
 
 # LLM Docs Audit
