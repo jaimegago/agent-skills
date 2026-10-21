@@ -1,8 +1,8 @@
 ---
 name: llm-docs-authoring
-description: Create or edit AGENTS.md files. Use when asked to create a AGENTS.md, add or update sections, or apply findings from an llm-docs-audit run. Does not hunt for drift.
+description: Create or edit AGENTS.md files. Use when asked to create a AGENTS.md, add or update sections, or apply findings from an llm-docs-audit or llm-docs-update run. Does not hunt for drift.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # LLM Docs Authoring
@@ -18,8 +18,9 @@ Invoke this skill when the developer asks any of:
 - "Add a section to AGENTS.md for [X]"
 - "Update the build commands in AGENTS.md"
 - "Apply the findings from the audit"
+- "Apply these findings" (following an llm-docs-update run)
 
-Do NOT invoke this skill to hunt for drift. That is llm-docs-audit's job.
+Do NOT invoke this skill to hunt for drift. That is llm-docs-audit's job. Do NOT invoke this skill to reflect on the session. That is llm-docs-update's job.
 
 ## Termination rule
 

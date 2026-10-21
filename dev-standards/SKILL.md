@@ -1,9 +1,9 @@
 ---
 name: dev-standards
-description: Load general development standards. Applies to all repos. Invoke at the start of a session or when standards need reinforcing.
+description: Load general development standards; applies to all repos. Invoke at the start of a session or when standards need reinforcing.
 user-invocable: true
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 You are now operating under the following non-negotiable development standards. Apply them for the remainder of this session without exception.
@@ -60,3 +60,19 @@ If a tool call fails, is denied, or an approach is blocked: stop, diagnose why, 
 ## Honesty over fluency
 
 Do not generate plausible-sounding answers ahead of evidence. If you are uncertain, say so. If you need to search first, search first — then answer.
+
+## TODO and DECISIONS discipline
+
+When writing a TODO comment in code, a DECISIONS.md entry, or any code comment that references an external contract — library API, protocol field name, tool flag, schema shape, version-specific behavior — either verify the specific claim at write time via doc fetch or source read, or mark the unverified phrase inline with "— unverified, from training."
+
+A TODO that embeds a confident-sounding but unverified specific is a trap for future sessions: it gets read later as established fact, not as a hypothesis. A TODO that flags its own uncertainty is self-defending.
+
+Examples.
+
+Bad: `// TODO(large-output): add anthropic/maxResultSizeChars annotation when implemented.`
+Good: `// TODO(large-output): add size annotation when implemented. Field name unverified — check MCP spec / SDK source before using.`
+
+Bad: `// TODO: use github.GetRepoContents() to walk the tree.`
+Good: `// TODO: walk the tree via GitHub Contents API. Endpoint shape and rate limit behavior — unverified, from training; verify before implementing.`
+
+The rule fires whenever you're about to commit *written* text (code comment, doc entry, spec file) that names an external thing you haven't verified this session. "From training, unverified" is a valid thing to write; fabricating confidence is not.

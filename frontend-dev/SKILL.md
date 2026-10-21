@@ -2,7 +2,7 @@
 name: frontend-dev
 description: Senior-level frontend engineering guidance covering architecture, component design, performance, design systems, API integration, and testing. Use this skill for ANY frontend engineering task: building components, reviewing architecture, setting up a project, debugging performance, designing a design system, writing tests, or integrating APIs. Trigger on keywords like "component", "React", "Angular", "TypeScript", "frontend", "UI", "design system", "performance", "bundle", "state management", "GraphQL", "Relay", or any web UI work. Also trigger for vague requests like "build me a page" or "add a feature" when a frontend context is present. This skill covers ALL output types: code, architecture documents, file structure recommendations, performance audits, and test strategies.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # Frontend Dev Skill
@@ -99,13 +99,14 @@ The `LSP` tool routes to `tsserver` for TS/TSX. Single-file ops are reliable col
 - Query `findReferences` **from a usage site** (a file that imports the symbol), not the declaration in isolation — this forces the project graph to load.
 - For "is this still used anywhere?" decisions (dead-code removal, safe renames), confirm with `grep` — an undercount here is dangerous.
 
-### Tooling Defaults (2025)
+### Tooling Defaults (2026)
 
-- **Bundler**: Vite (default for new projects); Webpack 5 for large enterprise setups already using it
+- **Bundler**: Vite for SPAs and React Router v7 apps; Turbopack for Next.js (stable and default in Next.js 16+, no flag needed); Webpack 5 only for legacy setups that can't migrate
 - **Linting**: ESLint + `@typescript-eslint` + Prettier (formatting separate from linting)
 - **Package manager**: pnpm preferred for monorepos; npm or yarn acceptable
 - **Monorepo**: Nx or Turborepo for multi-package workspaces
 - **CI**: Run type-check, lint, test, and build on every PR. Never merge red pipelines.
+- **Node**: 20.9+ minimum (Next.js 16 baseline; most of the 2026 ecosystem follows suit)
 
 ---
 
@@ -136,6 +137,6 @@ This skill covers engineering. For visual aesthetics — typography choices, col
 Read these before producing stack-specific output:
 
 - `references/typescript.md` — TypeScript strict mode, patterns, common pitfalls
-- `references/react.md` — React 19, Next.js, hooks, state management, rendering strategies
+- `references/react.md` — React 19.2, Next.js 16, React Router v7, hooks, state management, rendering strategies
 - `references/react-graphql.md` — Relay, colocated fragments, GraphQL patterns in React
-- `references/angular.md` — Angular v22, Signals, Standalone Components, zoneless, NgRx
+- `references/angular.md` — Angular v21, Signals, Standalone Components, zoneless-by-default, Signal Forms

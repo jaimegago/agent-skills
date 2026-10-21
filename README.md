@@ -51,6 +51,15 @@ every skill's version at that commit, so a pin resolves to a set of skill
 versions without reading ten files. A tag is cut when a consumer needs to pin
 the result.
 
+- `v1.2.0` — dev-standards `1.1.0`, frontend-dev `1.1.0`,
+  frontend-runtime-debugging `1.0.0`, git-commit `1.1.0`, go-backend `1.0.0`,
+  go-code-review `1.0.0`, go-mcp `1.0.0`, human-docs-authoring `1.0.0`,
+  llm-docs-audit `1.1.0`, llm-docs-authoring `1.1.0`, llm-docs-update
+  `1.0.0`, save-prompt `1.1.0`, troubleshooting `1.0.0`. Adds go-code-review,
+  go-mcp and llm-docs-update; git-commit gates on plain `lint` after
+  lint-fix; dev-standards gains TODO and DECISIONS discipline and its
+  universal marker in the lowercase form the llm-docs tier-1 match requires;
+  frontend-dev refreshed to React 19.2, Next.js 16 and Angular 21.
 - `v1.1.0` — every skill at `1.0.0`: dev-standards, frontend-dev,
   frontend-runtime-debugging, git-commit, go-backend, human-docs-authoring,
   llm-docs-audit, llm-docs-authoring, save-prompt, troubleshooting.

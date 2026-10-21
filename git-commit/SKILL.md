@@ -2,7 +2,7 @@
 name: git-commit
 description: Commit staged and unstaged changes with an auto-generated Conventional Commit message, then sync the branch with the remote. Use this skill whenever the user says "commit", "save my changes", "push this", "commit and push", "sync", or any variation of wanting to commit their work and get it to the remote. Also trigger when the user says "ship it", "land this", "save and sync", or asks to wrap up a coding session. Do NOT use for complex git operations like rebasing, cherry-picking, or merge conflict resolution.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 ## Workflow
@@ -25,7 +25,7 @@ If the user did not specify particular files, stage all changes (tracked and unt
 
 Before committing, detect the project's linter and run it with auto-fix on staged files. Detection order:
 
-- **Project-level lint target first**: if Makefile has a `lint` or `lint:fix` target, or package.json has a `lint` or `lint:fix` script, prefer that — it respects the project's own conventions. Move on to per-language detection only if no project-level target exists.
+- **Project-level lint target first**: if Makefile has a `lint-fix`, `lint:fix`, or equivalent auto-fix target, run it first to fix what can be auto-fixed, then **always** run the plain `lint` target (without fix) as a hard gate — if it exits non-zero, stop and report all errors before committing. This two-step mirrors CI exactly. If only a `lint` target exists (no fix variant), run it directly. Check for both hyphen-style (`lint-fix`) and colon-style (`lint:fix`) naming. Similarly for package.json scripts. Move on to per-language detection only if no project-level target exists.
 - **Go** (go.mod present): run `gofmt -w` on staged .go files, then `go vet ./...`
 - **JavaScript/TypeScript** (package.json present): run `npx eslint --fix` on staged JS/TS files if an ESLint config exists. If Prettier is configured, also run `npx prettier --write` on those files.
 - **Python** (pyproject.toml, setup.py, or requirements.txt present): run `ruff check --fix` and `ruff format` on staged .py files if Ruff is configured. Fall back to `black` if installed. Fall back to `flake8` (report-only, no auto-fix).

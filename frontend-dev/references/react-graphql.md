@@ -1,6 +1,6 @@
 # React + GraphQL / Relay Reference
 
-Covers React with GraphQL, with a focus on Relay (Meta's GraphQL client). Also covers Apollo Client as an alternative.
+Covers React with GraphQL, focused on Relay (Meta's GraphQL client, stable 20.x line as of early 2026). Also covers Apollo Client as an alternative.
 
 ## The Core Relay Principle: Colocated Fragments
 

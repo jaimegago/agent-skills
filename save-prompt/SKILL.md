@@ -5,7 +5,7 @@ disable-model-invocation: true
 allowed-tools: Bash(git *) Read Write
 argument-hint: [target-file-or-directory]
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 ## Purpose
@@ -84,3 +84,5 @@ Report to the user:
 - If a prompt file with the same name already exists, this is handled in step 2.
 - If the user invokes this skill but no code was generated in the session, tell them and stop.
 - Respect .gitignore — do not stage prompt files in ignored directories.
+- If the user says "save prompt and commit", run this skill first, then chain to git-commit for the commit step.
+- If the user later modifies the generated code without updating the prompt, that's on them — the prompt is a snapshot of the specification at commit time, not a living document.

@@ -1,15 +1,17 @@
 # Angular Reference
 
-Covers Angular v22 (current stable as of late 2025). Modern Angular means: Standalone Components, Signals, Zoneless, functional APIs.
+Covers Angular v21 (current stable as of early 2026; v22 expected around May 2026). Modern Angular means: Standalone Components, Signals, zoneless-by-default, functional APIs, Signal Forms (experimental).
 
 ## The Modern Angular Mindset
 
-Angular has shed a lot of legacy baggage. In 2025:
-- **NgModules are legacy** — standalone components are the standard
+Angular has shed a lot of legacy baggage. In 2026:
+- **NgModules are legacy** — standalone components are the default
 - **Signals replace most RxJS** for local/component state
-- **Zoneless is the default** in new projects
+- **Zoneless is the default for new apps** in Angular 21+ — no provider needed
 - **Functional guards/interceptors** replace class-based ones
-- **Typed reactive forms** are the standard
+- **Signal Forms (experimental)** are the direction of travel; Reactive Forms remain the stable choice for production
+- **Vitest is the default test runner** — Karma is removed from the CLI defaults
+- **Angular MCP Server** ships with the CLI for AI-assisted development
 
 If you're working on a legacy codebase, migrate incrementally. New code should always follow modern patterns.
 
@@ -209,24 +211,139 @@ export const userResolver: ResolveFn<User> = (route) => {
 
 ---
 
-## Change Detection
+## Forms
 
-New projects should be zoneless:
+Angular has three forms APIs available in 2026:
+
+| API | Status | When to use |
+|---|---|---|
+| Reactive Forms (`FormGroup`, `FormControl`) | Stable | Default for production. Use for anything where stability guarantees matter. |
+| Template-driven Forms (`ngModel`) | Stable | Simple forms only. Most teams skip this in favor of Reactive. |
+| Signal Forms (`@angular/forms/signals`) | **Experimental** in v21 | New projects where you're already signal-first and can tolerate API changes. Expected to stabilize in a future release. |
+
+### Reactive Forms (the stable default)
+
+Still the right choice for most production apps. Typed, well-understood, no API churn. Pair with `FormBuilder` + `inject()`:
 
 ```typescript
-// main.ts
+@Component({
+  standalone: true,
+  imports: [ReactiveFormsModule],
+  template: `
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input formControlName="email" type="email" />
+      <input formControlName="password" type="password" />
+      <button [disabled]="loginForm.invalid">Login</button>
+    </form>
+  `
+})
+export class LoginComponent {
+  private fb = inject(FormBuilder)
+
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
+  })
+
+  onSubmit() {
+    if (this.loginForm.valid) {
+      // this.loginForm.value is fully typed
+    }
+  }
+}
+```
+
+### Signal Forms (experimental, new in v21)
+
+Signal Forms redefine forms as reactive state built on signals. The form model IS a signal, validation is declared against the model shape via a schema function, and the template uses a single `[formField]` directive instead of `formGroupName`/`formControlName`. Imports come from `@angular/forms/signals` (part of `@angular/forms`, no extra install).
+
+```typescript
+import { Component, signal } from '@angular/core'
+import { form, required, email, FormField } from '@angular/forms/signals'
+
+interface LoginModel {
+  email: string
+  password: string
+}
+
+@Component({
+  standalone: true,
+  imports: [FormField],
+  template: `
+    <form (submit)="onSubmit($event)">
+      <input type="email" [formField]="loginForm.email" />
+      @if (loginForm.email().errors().length) {
+        <span>{{ loginForm.email().errors()[0].message }}</span>
+      }
+
+      <input type="password" [formField]="loginForm.password" />
+      <button [disabled]="!loginForm().valid()">Login</button>
+    </form>
+  `
+})
+export class LoginComponent {
+  loginModel = signal<LoginModel>({ email: '', password: '' })
+
+  loginForm = form(this.loginModel, (path) => {
+    required(path.email, { message: 'Email is required' })
+    email(path.email, { message: 'Enter a valid email' })
+    required(path.password, { message: 'Password is required' })
+  })
+
+  onSubmit(event: Event) {
+    event.preventDefault()
+    if (this.loginForm().valid()) {
+      const credentials = this.loginModel()
+      // ...
+    }
+  }
+}
+```
+
+Key differences from Reactive Forms:
+- The model signal is the source of truth — mutating it updates the form, and form edits update it
+- Validation lives in a schema function attached to the data structure, not scattered across controls
+- No `FormGroup`/`FormControl`/`FormArray` — the form mirrors your model type exactly, with full inference
+- Conditional logic (`disabled`, `hidden`, `readonly`) is declared reactively in the schema, no manual `enable()`/`disable()` calls
+- Composable via `schema()` + `apply()` for reusable field validation rules
+- Integrates naturally with zoneless change detection
+
+**Recommendation**: Use Reactive Forms for production apps where you need stability. Reach for Signal Forms in new greenfield work where you're comfortable tracking an experimental API, and where the form model-as-state mental shift genuinely simplifies things (complex forms with conditional logic and cross-field validation benefit most).
+
+---
+
+## Change Detection
+
+New Angular 21 apps are zoneless by default — **you don't need to add any provider**. The CLI scaffolds `ng new` with no `zone.js` in polyfills and no change-detection provider in `app.config.ts`:
+
+```typescript
+// main.ts — Angular 21 default (zoneless, no provider needed)
 bootstrapApplication(AppComponent, {
   providers: [
-    provideExperimentalZonelessChangeDetection(),  // Zoneless
     provideRouter(routes),
     provideHttpClient(),
+    provideBrowserGlobalErrorListeners(), // recommended with zoneless
   ]
 })
 ```
 
-With zoneless + Signals, Angular only re-renders components when their signals change. No Zone.js overhead.
+If you're migrating an existing app, Angular 20+ stabilized the API as `provideZonelessChangeDetection()` — add it explicitly and remove `zone.js` from polyfills in `angular.json`:
 
-For components not yet on Signals, use `ChangeDetectionStrategy.OnPush` as the minimum:
+```typescript
+// Explicit opt-in (Angular 20+ migration path)
+import { provideZonelessChangeDetection } from '@angular/core'
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideZonelessChangeDetection(),
+    provideRouter(routes),
+  ]
+})
+```
+
+With zoneless + Signals, Angular only re-renders components when their signals change. In zoneless apps, change detection runs on: signal updates used in templates, template-bound events (like `(click)`), the `async` pipe, and explicit `markForCheck()` / `ComponentRef.setInput()` calls. No more blanket "everything async triggers CD" behavior.
+
+If you need to keep Zone.js (legacy third-party libraries that depend on it), add `provideZoneChangeDetection()` instead. For components not yet on Signals in a zone-based app, use `ChangeDetectionStrategy.OnPush` as the minimum:
 
 ```typescript
 @Component({
@@ -372,6 +489,8 @@ provideHttpClient(withInterceptors([authInterceptor, errorInterceptor]))
 
 ## Testing
 
+Angular 21 ships **Vitest as the default test runner**. Karma has been removed from CLI defaults; Jest and Web Test Runner are deprecated and scheduled for removal in v22. New projects get Vitest out of the box. Existing projects on Karma/Jasmine still work — migrate when convenient (Angular provides an experimental migration schematic).
+
 ```typescript
 // user.service.spec.ts
 describe('UserService', () => {
@@ -408,4 +527,32 @@ it('displays user list', async () => {
 })
 ```
 
+For zoneless components, prefer `await fixture.whenStable()` over `fixture.detectChanges()` in tests — it better matches production behavior. If your test suite still relies on `fakeAsync`/`tick` patterns, note that those need updating for Vitest's native timer APIs.
+
 Prefer `@testing-library/angular` for component tests — same philosophy as React Testing Library, tests behavior not implementation.
+
+---
+
+## Accessibility: `@angular/aria`
+
+Angular 21 introduced `@angular/aria`, a new package providing headless primitives for common WAI-ARIA patterns (combobox, listbox, menu, tabs, etc.) with built-in keyboard interactions and focus management. It complements Angular Material and the CDK for teams that need ARIA-correct building blocks without Material Design visuals. Currently in developer preview.
+
+```bash
+ng add @angular/aria
+```
+
+If you're building a custom design system on top of Angular, prefer `@angular/aria` primitives over hand-rolling accessibility logic.
+
+---
+
+## AI Tooling: Angular MCP Server
+
+Angular 21 ships a stable Model Context Protocol server built into the CLI, giving AI coding agents structured access to Angular-aware tools. Relevant when working with Claude Code, Cursor, or any MCP-compatible agent on an Angular codebase.
+
+Notable tools exposed by the server:
+- `get_best_practices` — returns the current Angular best-practices guide
+- `search_documentation` — queries official docs scoped to your Angular version
+- `find_examples` — retrieves up-to-date code examples
+- `onpush_zoneless_migration` — analyzes the codebase and helps migrate components to OnPush and zoneless
+
+This is the most reliable way to keep an AI agent from generating outdated (NgModule-based, zone-dependent) Angular code. Configure your agent to use the Angular MCP server whenever working in an Angular workspace.

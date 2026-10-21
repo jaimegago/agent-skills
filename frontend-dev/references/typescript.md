@@ -18,8 +18,10 @@ Every project starts with strict mode. No exceptions.
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
-    "target": "ES2020",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "esModuleInterop": true,
@@ -28,7 +30,9 @@ Every project starts with strict mode. No exceptions.
 }
 ```
 
-`strict: true` enables 7 flags at once. The additional flags above (`noImplicitReturns`, `noUnusedLocals`, etc.) are not included in `strict` but are strongly recommended.
+`strict: true` enables 7 flags at once. The additional flags above (`noImplicitReturns`, `noUnusedLocals`, `noUncheckedIndexedAccess`, etc.) are not included in `strict` but are strongly recommended. `noUncheckedIndexedAccess` in particular catches a class of common array/object-access bugs by adding `undefined` to the result type of index access — enable it on new projects from day one.
+
+`target: "ES2022"` is the 2026 default — widely supported in modern browsers and Node 18+. Only go lower if you actually need to support older runtimes.
 
 For existing codebases that can't enable strict all at once: enable flags incrementally, starting with `strictNullChecks`, then `noImplicitAny`.
 

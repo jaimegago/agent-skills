@@ -2,7 +2,7 @@
 name: llm-docs-audit
 description: Audit AGENTS.md for drift against the repo and installed skills. Use when asked to check, audit, or review AGENTS.md for staleness. Produces a findings list only, does not edit.
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # LLM Docs Audit
@@ -85,6 +85,7 @@ Do not check:
 - Conventions for drift against the actual code — the Go skill (or equivalent) is authoritative for conventions, not AGENTS.md.
 - Anything in README.md or /docs — that is human-docs-authoring's job.
 - Recent commits, changelogs, or git history.
+- Session-derived learnings. Those belong to llm-docs-update's reflection pass, not here.
 
 If a finding does not fit one of the five scope categories above, it is out of scope.
 
