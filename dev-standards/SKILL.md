@@ -3,7 +3,7 @@ name: dev-standards
 description: Load general development standards; applies to all repos. Invoke at the start of a session or when standards need reinforcing.
 user-invocable: true
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 You are now operating under the following non-negotiable development standards. Apply them for the remainder of this session without exception.
@@ -76,3 +76,35 @@ Bad: `// TODO: use github.GetRepoContents() to walk the tree.`
 Good: `// TODO: walk the tree via GitHub Contents API. Endpoint shape and rate limit behavior — unverified, from training; verify before implementing.`
 
 The rule fires whenever you're about to commit *written* text (code comment, doc entry, spec file) that names an external thing you haven't verified this session. "From training, unverified" is a valid thing to write; fabricating confidence is not.
+
+## Pin a behavior fix
+
+A commit that corrects behavior ships a test that **fails without the fix and passes with it**. Prove that by revert-run-restore, not by reading the test:
+
+1. Revert the fix in the working tree, leaving the test in place.
+2. Run that specific test and confirm it fails for the reason the fix addresses — not a compile error, not an unrelated assertion.
+3. Restore the fix and confirm the test passes.
+
+A test written against a fix that was never reverted is an assumption, not a pin: it can assert something the fix did not cause, or something that was already true. The pin is part of the fix, so "Minimal changes only" does not excuse leaving it out.
+
+**Revert the fix's hunks, not its files, when later commits touched the same file.** A whole-file revert is the obvious first attempt, and it removes the later changes along with the fix: the build breaks, and a test that fails because nothing compiles has proven nothing. Reverse only the lines the fix introduced. In joe, an audit that re-proved the pins on a run of bug fixes found two of them revertible only this way.
+
+**A change that corrects no behavior gets a recorded not-pinned rationale, not a contrived test.** Write down, where the repository records such things (commit message, pull request, decision log), that the change is not pinned and why. Two that joe exempted:
+
+- Swapping a static favicon asset. There is no runtime surface, and the only possible test asserts the file's contents back at itself.
+- Renaming UI label strings. Labels changed, behavior did not, and a test over the strings pins the copy against the very edits it should permit.
+
+The record is what lets a reviewer tell "no test" from "forgot the test". A silent omission reads as the second.
+
+## Pin wiring at the composition root
+
+Unit-level pins do not protect the wiring. A unit test constructs its own subject, so it is blind to how production assembles it: a dead consumer, a duplicate instance and a discarded argument all pass every unit test, because that seam is exactly what unit tests abstract away.
+
+The worked example, from joe (D-0107). Governance resolvers were wired into a policy engine whose only transport consumer was a middleware that had long since become a pass-through discarding its engine argument. The engine actually gating requests was a second, bare one built inside the API constructor, carrying neither resolver. The resolvers, the engine, the middleware and the accessor all had passing tests, and a read the launch default should have admitted returned `403` on the real transport path. Nothing tested the wiring.
+
+When a defect's cause is "which instance was injected where", the fix owes both of these:
+
+- **A static construction guard**: a test asserting the constructor is called only where it may be. Joe's `TestGuard_PolicyEngineConstructedOnlyAtCompositionRoot` fails on any call to the engine's constructors outside the binary's main package and test files. That makes a second instance impossible to reintroduce, rather than merely absent today.
+- **An end-to-end pin through the production composition path**: extract the assembly into a named seam that the entrypoint and the test both call (joe's `buildHTTPHandler`), drive a real request through it, and assert the governed outcome. A pin that constructs its own subject proves nothing about the binary.
+
+Ask of any test for a wiring-shaped fix: **would this test fail if the object under test were never wired into the binary at all?** If not, it is not a pin.
